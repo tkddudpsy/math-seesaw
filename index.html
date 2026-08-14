@@ -668,7 +668,6 @@
     }
 
     function checkAnswer() {
-      // 파싱 시 분수 입력 처리 적용
       const ux = parseFraction(inputX.value);
       const uy = parseFraction(inputY.value);
 
@@ -807,7 +806,8 @@
       ctx.beginPath(); ctx.moveTo(xZero, PADDING - 5); ctx.lineTo(xZero, canvasSize - PADDING + 5); ctx.stroke();
 
       ctx.fillStyle = '#64748b';
-      ctx.font = '10px sans-serif';
+      // 💡 [수정] 좌표축 눈금 숫자 크기: 10px -> 13px
+      ctx.font = '13px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
 
@@ -838,7 +838,8 @@
 
       const topY = sy - 10 - mass * (blockSize + blockGap) - 6;
       ctx.fillStyle = color;
-      ctx.font = 'bold 11px sans-serif';
+      // 💡 [수정] 물체 라벨 및 무게 글자 크기: 11px -> 14px
+      ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.fillText(`${labelText} (${mass}kg)`, sx, topY);
@@ -867,7 +868,8 @@
       ctx.stroke();
 
       ctx.fillStyle = color;
-      ctx.font = 'bold 10px sans-serif';
+      // 💡 [수정] 받침점 P 좌표 표시 글자 크기: 10px -> 13px
+      ctx.font = 'bold 13px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText(`P(${worldX.toFixed(2)}, ${worldY.toFixed(2)})`, sx, sy + triHeight + 3);
@@ -915,7 +917,9 @@
       ctx.fillStyle = '#dc2626';
       ctx.beginPath(); ctx.arc(sbx, sby, 6, 0, Math.PI * 2); ctx.fill();
 
-      ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      // 💡 [수정] 점 A, B 좌표 글자 크기: 12px -> 15px
+      ctx.font = 'bold 15px sans-serif'; 
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.fillStyle = '#1d4ed8'; ctx.fillText(`A(${ax}, ${ay})`, sax, say + 8);
       ctx.fillStyle = '#b91c1c'; ctx.fillText(`B(${bx}, ${by})`, sbx, sby + 8);
 
@@ -928,7 +932,6 @@
       drawSeesaw();
     }
 
-    // 풀이 모달 내용 업데이트 (분수 표시 적용)
     function updateSolutionModal() {
       const { ax, ay, m1, bx, by, m2 } = currentProblem;
       const totalM = m1 + m2;
@@ -1011,7 +1014,6 @@
       internalRatioInfo.style.display = 'inline';
     });
 
-    // 정답 보기 버튼 핸들러 (분수 표기 지원)
     showAnswerBtn.addEventListener('click', () => {
       const { ax, ay, m1, bx, by, m2 } = currentProblem;
       const totalM = m1 + m2;
@@ -1025,7 +1027,6 @@
       answerText.style.display = 'inline';
       answerText.textContent = `P(${fracX}, ${fracY})`;
 
-      // 입력란에 분수 형태 정답 채우기
       inputX.value = fracX;
       inputY.value = fracY;
     });
