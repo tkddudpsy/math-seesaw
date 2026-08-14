@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공통수학2 - 내분점과 시소의 균형점 탐구</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-color: #16a34a;
+      --success-hover: #15803d;
+      --warning-color: #d97706;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --point-a-color: #2563eb;
+      --point-b-color: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .canvas-container {
+      flex: 1 1 550px;
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: #ffffff;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .sidebar {
+      flex: 1 1 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+    }
+
+    .btn-success:hover {
+      background-color: var(--success-hover);
+    }
+
+    .btn-outline {
+      background-color: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .hint-btn {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .hint-btn:hover {
+      background-color: #fde68a;
+      color: #b45309;
+    }
+
+    .info-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background-color: #f8fafc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      border: 1px solid #f1f5f9;
+    }
+
+    .info-label {
+      font-weight: 600;
+    }
+
+    .badge-a { color: var(--point-a-color); font-weight: bold; }
+    .badge-b { color: var(--point-b-color); font-weight: bold; }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .input-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .input-field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .input-field input {
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .input-field input:focus {
+      border-color: var(--primary-color);
+    }
+
+    /* 정답 보기 영역 스타일 */
+    .answer-reveal-box {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .result-box {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      text-align: center;
+    }
+
+    .result-success { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .result-error { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .result-warning { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+    .highlight-text { color: #d97706; font-weight: bold; }
+
+    /* 모달 팝업 스타일 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 90%;
+      max-width: 650px;
+      max-height: 85vh;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .close-btn:hover { color: #0f172a; background: #e2e8f0; }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .step-title {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .math-expr-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .main-content { flex-direction: column; }
+      .canvas-container, .sidebar { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>⚖️ 공통수학2 내분점 시소 실습 앱</h1>
+      <p>좌표평면 위 시소의 두 끝점에 놓인 물체의 무게를 확인하고, 시소가 평형을 이루는 내분점(받침점)을 탐구해 봅시다.</p>
+    </header>
+
+    <div class="main-content">
+      <!-- 캔버스 영역 -->
+      <div class="canvas-container">
+        <canvas id="seesawCanvas" width="550" height="550"></canvas>
+      </div>
+
+      <!-- 사이드바 -->
+      <div class="sidebar">
+        <!-- 제어 버튼 -->
+        <div class="card">
+          <div class="btn-group">
+            <button id="generateBtn" class="btn">🎲 새 문제 생성</button>
+            <button id="solutionBtn" class="btn btn-outline">📖 풀이 보기</button>
+          </div>
+        </div>
+
+        <!-- 문제 조건 -->
+        <div class="card">
+          <div class="card-title">📌 현재 문제 조건</div>
+          <ul class="info-list">
+            <li class="info-item">
+              <span class="info-label badge-a">점 A (물체 1)</span>
+              <span id="pointAInfo">A(-, -) | 0 kg</span>
+            </li>
+            <li class="info-item">
+              <span class="info-label badge-b">점 B (물체 2)</span>
+              <span id="pointBInfo">B(-, -) | 0 kg</span>
+            </li>
+            <li class="info-item">
+              <span class="info-label">무게의 비 (m₁ : m₂)</span>
+              <span id="massRatioInfo" style="font-weight: bold;">- : -</span>
+            </li>
+            <li class="info-item">
+              <span class="info-label">시소 기울기 각도</span>
+              <span id="angleInfo" style="font-size: 0.85rem; color: #475569;">-</span>
+            </li>
+            <li class="info-item">
+              <span class="info-label">균형점 내분비 (m₂ : m₁)</span>
+              <div>
+                <button id="hintBtn" class="hint-btn">💡 힌트</button>
+                <span id="internalRatioInfo" class="highlight-text" style="display: none;">- : -</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 답안 입력 카드 -->
+        <div class="card">
+          <div class="card-title">🎯 받침점(내분점 P) 좌표 입력</div>
+          <div class="input-group">
+            <div class="input-field">
+              <label for="inputX">x 좌표 (분수 가능)</label>
+              <input type="text" id="inputX" placeholder="예: 3/2 또는 1.5">
+            </div>
+            <div class="input-field">
+              <label for="inputY">y 좌표 (분수 가능)</label>
+              <input type="text" id="inputY" placeholder="예: -5/4 또는 -1.25">
+            </div>
+          </div>
+          <button id="checkBtn" class="btn btn-success">⚖️ 균형 확인하기</button>
+
+          <!-- 정답 보기 영역 -->
+          <div class="answer-reveal-box">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">정답이 궁금한가요?</span>
+            <div>
+              <button id="showAnswerBtn" class="hint-btn">🔍 정답 보기</button>
+              <span id="answerText" class="highlight-text" style="display: none; font-size: 0.9rem;"></span>
+            </div>
+          </div>
+
+          <div id="resultMessage" class="result-box"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해설 모달 (팝업) -->
+  <div id="solutionModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>📖 단계별 수학적 풀이 해설</h2>
+        <button id="closeModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- 동적으로 풀이 생성 -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('seesawCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // UI Elements
+    const generateBtn = document.getElementById('generateBtn');
+    const solutionBtn = document.getElementById('solutionBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const inputX = document.getElementById('inputX');
+    const inputY = document.getElementById('inputY');
+    const resultMessage = document.getElementById('resultMessage');
+
+    const pointAInfo = document.getElementById('pointAInfo');
+    const pointBInfo = document.getElementById('pointBInfo');
+    const massRatioInfo = document.getElementById('massRatioInfo');
+    const angleInfo = document.getElementById('angleInfo');
+    const hintBtn = document.getElementById('hintBtn');
+    const internalRatioInfo = document.getElementById('internalRatioInfo');
+
+    const showAnswerBtn = document.getElementById('showAnswerBtn');
+    const answerText = document.getElementById('answerText');
+
+    const solutionModal = document.getElementById('solutionModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalBody = document.getElementById('modalBody');
+
+    // Grid config (-10 to 10)
+    const GRID_MIN = -10;
+    const GRID_MAX = 10;
+    const PADDING = 35;
+    const canvasSize = canvas.width;
+    const usableSize = canvasSize - 2 * PADDING;
+
+    // State Variables
+    let currentProblem = {
+      ax: -5, ay: -3, m1: 2,
+      bx: 5, by: 5, m2: 4,
+      angleDeg: 0
+    };
+
+    let userFulcrum = null;
+
+    // 물리 및 애니메이션 상태
+    let animState = 'IDLE'; // 'IDLE', 'BALANCED', 'TILTING', 'FALLING'
+    let animId = null;
+
+    let currentTiltAngle = 0;
+    let tiltVelocity = 0;
+    let targetTiltAngle = 0;
+
+    let fallY = 0;
+    let fallVelY = 0;
+    let fallAngle = 0;
+    let fallVelAngle = 0;
+    let isBroken = false;
+    let crashParticles = [];
+
+    // --- 🧮 수학 관련 헬퍼 함수 (분수 처리 & 유클리드 호제법) ---
+
+    // 문자열(예: "3/2", "-1.5", "4")을 숫자(float)로 변환
+    function parseFraction(str) {
+      if (!str) return NaN;
+      str = str.trim();
+      
+      if (str.includes('/')) {
+        const parts = str.split('/');
+        if (parts.length !== 2) return NaN;
+        
+        const num = parseFloat(parts[0]);
+        const den = parseFloat(parts[1]);
+        
+        if (isNaN(num) || isNaN(den) || den === 0) return NaN;
+        return num / den;
+      }
+      
+      return parseFloat(str);
+    }
+
+    // 최대공약수(GCD) 계산
+    function gcd(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b) {
+        let t = b;
+        b = a % b;
+        a = t;
+      }
+      return a;
+    }
+
+    // 분수 형태로 변환 (예: 6/4 -> "3/2")
+    function toFractionStr(num, den) {
+      if (den === 0) return "정의되지 않음";
+      if (num === 0) return "0";
+      
+      const g = gcd(num, den);
+      let n = num / g;
+      let d = den / g;
+      
+      if (d < 0) {
+        n = -n;
+        d = -d;
+      }
+      
+      if (d === 1) return `${n}`;
+      return `${n}/${d}`;
+    }
+
+    function toScreenX(x) {
+      return PADDING + ((x - GRID_MIN) / (GRID_MAX - GRID_MIN)) * usableSize;
+    }
+
+    function toScreenY(y) {
+      return canvasSize - PADDING - ((y - GRID_MIN) / (GRID_MAX - GRID_MIN)) * usableSize;
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateNewProblem() {
+      if (animId) cancelAnimationFrame(animId);
+
+      let ax, ay, bx, by;
+      let dist = 0;
+      let angleDeg = 90;
+
+      while (dist < 6 || angleDeg > 60) {
+        ax = getRandomInt(-8, 8);
+        ay = getRandomInt(-8, 8);
+        bx = getRandomInt(-8, 8);
+        by = getRandomInt(-8, 8);
+
+        const dx = bx - ax;
+        const dy = by - ay;
+        
+        dist = Math.hypot(dx, dy);
+
+        if (dx !== 0) {
+          const rad = Math.atan2(Math.abs(dy), Math.abs(dx));
+          angleDeg = rad * (180 / Math.PI);
+        } else {
+          angleDeg = 90;
+        }
+      }
+
+      const m1 = getRandomInt(1, 5);
+      const m2 = getRandomInt(1, 5);
+
+      currentProblem = { ax, ay, m1, bx, by, m2, angleDeg };
+
+      // 상태 및 입력 UI 초기화
+      userFulcrum = null;
+      animState = 'IDLE';
+      currentTiltAngle = 0;
+      tiltVelocity = 0;
+      targetTiltAngle = 0;
+      fallY = 0;
+      fallVelY = 0;
+      fallAngle = 0;
+      fallVelAngle = 0;
+      isBroken = false;
+      crashParticles = [];
+
+      inputX.value = '';
+      inputY.value = '';
+      resultMessage.style.display = 'none';
+      hintBtn.style.display = 'inline-block';
+      internalRatioInfo.style.display = 'none';
+
+      showAnswerBtn.style.display = 'inline-block';
+      answerText.style.display = 'none';
+      answerText.textContent = '';
+
+      pointAInfo.textContent = `A(${ax}, ${ay}) | ${m1} kg`;
+      pointBInfo.textContent = `B(${bx}, ${by}) | ${m2} kg`;
+      massRatioInfo.textContent = `${m1} : ${m2}`;
+      angleInfo.textContent = `${angleDeg.toFixed(1)}° (60° 이내)`;
+      internalRatioInfo.textContent = `${m2} : ${m1} (역비율)`;
+
+      render();
+    }
+
+    function rotatePointScreen(sx, sy, spx, spy, angle) {
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const dx = sx - spx;
+      const dy = sy - spy;
+      return {
+        x: spx + dx * cos - dy * sin,
+        y: spy + dx * sin + dy * cos
+      };
+    }
+
+    function checkAnswer() {
+      // 파싱 시 분수 입력 처리 적용
+      const ux = parseFraction(inputX.value);
+      const uy = parseFraction(inputY.value);
+
+      if (isNaN(ux) || isNaN(uy)) {
+        alert('x좌표와 y좌표를 올바른 숫자 또는 분수로 입력해주세요. (예: 3/2, -1.5)');
+        return;
+      }
+
+      const { ax, ay, m1, bx, by, m2 } = currentProblem;
+
+      const truePx = (m2 * bx + m1 * ax) / (m1 + m2);
+      const truePy = (m2 * by + m1 * ay) / (m1 + m2);
+
+      const dx = bx - ax;
+      const dy = by - ay;
+      const segLenSq = dx * dx + dy * dy;
+
+      const t = ((ux - ax) * dx + (uy - ay) * dy) / segLenSq;
+      const distToLine = Math.abs(dx * (ay - uy) - (ax - ux) * dy) / Math.sqrt(segLenSq);
+
+      const isNearSegment = (t >= -0.05 && t <= 1.05) && (distToLine <= 0.4);
+      const distToTrueP = Math.hypot(ux - truePx, uy - truePy);
+      const isCorrect = distToTrueP <= 0.15;
+
+      fallY = 0; fallVelY = 0; fallAngle = 0; fallVelAngle = 0;
+      isBroken = false; crashParticles = [];
+      resultMessage.style.display = 'block';
+
+      const sax = toScreenX(ax); const say = toScreenY(ay);
+      const sbx = toScreenX(bx); const sby = toScreenY(by);
+
+      if (!isNearSegment) {
+        userFulcrum = { x: ux, y: uy, status: 'warning' };
+        resultMessage.className = 'result-box result-warning';
+        resultMessage.textContent = '❌ 그 위치에 받침대를 세울 수 없네요!';
+        animState = 'FALLING';
+        fallVelY = -2;
+        fallVelAngle = (bx >= ax ? 1 : -1) * 0.05;
+      } else if (isCorrect) {
+        userFulcrum = { x: truePx, y: truePy, status: 'correct' };
+        resultMessage.className = 'result-box result-success';
+        resultMessage.textContent = '🎉 정답입니다! 시소가 평형(수평)을 유지합니다.';
+        animState = 'BALANCED';
+
+        const currentScreenAngle = Math.atan2(sby - say, sbx - sax);
+        const targetVectorAngle = (sbx >= sax) ? 0 : Math.PI;
+        let diff = targetVectorAngle - currentScreenAngle;
+
+        while (diff > Math.PI) diff -= 2 * Math.PI;
+        while (diff < -Math.PI) diff += 2 * Math.PI;
+
+        targetTiltAngle = diff;
+      } else {
+        userFulcrum = { x: ux, y: uy, status: 'error' };
+        resultMessage.className = 'result-box result-error';
+        resultMessage.textContent = '⚠️ 균형을 이루지 못했습니다. 다시 계산해 보세요.';
+        animState = 'TILTING';
+
+        const torqueA = m1 * (ax - ux);
+        const torqueB = m2 * (bx - ux);
+        const netTorque = torqueA + torqueB;
+        targetTiltAngle = netTorque > 0 ? 0.35 : -0.35;
+      }
+
+      startAnimation();
+    }
+
+    function updatePhysics() {
+      if (animState === 'TILTING' || animState === 'BALANCED') {
+        const diff = targetTiltAngle - currentTiltAngle;
+        tiltVelocity += diff * 0.06;
+        tiltVelocity *= 0.82;
+        currentTiltAngle += tiltVelocity;
+      } else if (animState === 'FALLING') {
+        if (!isBroken) {
+          fallVelY += 0.8;
+          fallY += fallVelY;
+          fallAngle += fallVelAngle;
+
+          const { ay, by } = currentProblem;
+          const centerSY = (toScreenY(ay) + toScreenY(by)) / 2 + fallY;
+          if (centerSY >= canvasSize - PADDING) {
+            isBroken = true;
+            const { ax, bx } = currentProblem;
+            const impactX = (toScreenX(ax) + toScreenX(bx)) / 2;
+            for (let i = 0; i < 15; i++) {
+              crashParticles.push({
+                x: impactX, y: canvasSize - PADDING,
+                vx: (Math.random() - 0.5) * 10, vy: -Math.random() * 8 - 2,
+                size: Math.random() * 5 + 3,
+                color: Math.random() > 0.4 ? '#475569' : '#d97706', life: 1.0
+              });
+            }
+          }
+        } else {
+          crashParticles.forEach(p => {
+            p.x += p.vx; p.y += p.vy; p.vy += 0.4; p.life -= 0.03;
+          });
+          crashParticles = crashParticles.filter(p => p.life > 0);
+        }
+      }
+    }
+
+    function startAnimation() {
+      if (animId) cancelAnimationFrame(animId);
+      function loop() {
+        updatePhysics();
+        render();
+        if (animState === 'TILTING' || animState === 'BALANCED' || animState === 'FALLING') {
+          animId = requestAnimationFrame(loop);
+        }
+      }
+      loop();
+    }
+
+    function drawGrid() {
+      ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+      ctx.strokeStyle = '#f1f5f9';
+      ctx.lineWidth = 1;
+
+      for (let i = GRID_MIN; i <= GRID_MAX; i++) {
+        const x = toScreenX(i);
+        ctx.beginPath(); ctx.moveTo(x, PADDING); ctx.lineTo(x, canvasSize - PADDING); ctx.stroke();
+        const y = toScreenY(i);
+        ctx.beginPath(); ctx.moveTo(PADDING, y); ctx.lineTo(canvasSize - PADDING, y); ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+
+      const yZero = toScreenY(0);
+      ctx.beginPath(); ctx.moveTo(PADDING - 5, yZero); ctx.lineTo(canvasSize - PADDING + 5, yZero); ctx.stroke();
+
+      const xZero = toScreenX(0);
+      ctx.beginPath(); ctx.moveTo(xZero, PADDING - 5); ctx.lineTo(xZero, canvasSize - PADDING + 5); ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      for (let i = GRID_MIN; i <= GRID_MAX; i += 2) {
+        if (i !== 0) {
+          ctx.fillText(i.toString(), toScreenX(i), yZero + 4);
+          ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+          ctx.fillText(i.toString(), xZero - 5, toScreenY(i));
+          ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        }
+      }
+    }
+
+    function drawStackedBlocks(sx, sy, mass, color, labelText) {
+      const blockSize = 16;
+      const blockGap = 2;
+
+      for (let i = 0; i < mass; i++) {
+        const boxX = sx - blockSize / 2;
+        const boxY = sy - 10 - (i + 1) * (blockSize + blockGap);
+
+        ctx.fillStyle = color;
+        ctx.fillRect(boxX, boxY, blockSize, blockSize);
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(boxX, boxY, blockSize, blockSize);
+      }
+
+      const topY = sy - 10 - mass * (blockSize + blockGap) - 6;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`${labelText} (${mass}kg)`, sx, topY);
+    }
+
+    function drawFulcrum(worldX, worldY, status) {
+      const sx = toScreenX(worldX);
+      const sy = toScreenY(worldY);
+
+      let color = '#16a34a';
+      if (status === 'error') color = '#dc2626';
+      if (status === 'warning') color = '#d97706';
+
+      const triHeight = 20;
+      const triHalfWidth = 12;
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx - triHalfWidth, sy + triHeight);
+      ctx.lineTo(sx + triHalfWidth, sy + triHeight);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`P(${worldX.toFixed(2)}, ${worldY.toFixed(2)})`, sx, sy + triHeight + 3);
+    }
+
+    function drawSeesaw() {
+      const { ax, ay, m1, bx, by, m2 } = currentProblem;
+
+      let sax = toScreenX(ax); let say = toScreenY(ay);
+      let sbx = toScreenX(bx); let sby = toScreenY(by);
+
+      if ((animState === 'TILTING' || animState === 'BALANCED') && userFulcrum) {
+        const spx = toScreenX(userFulcrum.x);
+        const spy = toScreenY(userFulcrum.y);
+        const posA = rotatePointScreen(sax, say, spx, spy, currentTiltAngle);
+        const posB = rotatePointScreen(sbx, sby, spx, spy, currentTiltAngle);
+        sax = posA.x; say = posA.y; sbx = posB.x; sby = posB.y;
+      } else if (animState === 'FALLING') {
+        const scx = (sax + sbx) / 2; const scy = (say + sby) / 2 + fallY;
+        const posA = rotatePointScreen(sax, say + fallY, scx, scy, fallAngle);
+        const posB = rotatePointScreen(sbx, sby + fallY, scx, scy, fallAngle);
+        sax = posA.x; say = posA.y; sbx = posB.x; sby = posB.y;
+      }
+
+      if (userFulcrum) drawFulcrum(userFulcrum.x, userFulcrum.y, userFulcrum.status);
+
+      if (isBroken) {
+        const midX = (sax + sbx) / 2; const midY = (say + sby) / 2;
+        ctx.strokeStyle = '#d97706'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(sax, say); ctx.lineTo(midX, midY + 10); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(midX, midY + 10); ctx.lineTo(sbx, sby); ctx.stroke();
+        crashParticles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+        });
+      } else {
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(sax, say); ctx.lineTo(sbx, sby); ctx.stroke();
+      }
+
+      ctx.fillStyle = '#2563eb';
+      ctx.beginPath(); ctx.arc(sax, say, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#dc2626';
+      ctx.beginPath(); ctx.arc(sbx, sby, 6, 0, Math.PI * 2); ctx.fill();
+
+      ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillStyle = '#1d4ed8'; ctx.fillText(`A(${ax}, ${ay})`, sax, say + 8);
+      ctx.fillStyle = '#b91c1c'; ctx.fillText(`B(${bx}, ${by})`, sbx, sby + 8);
+
+      drawStackedBlocks(sax, say, m1, '#2563eb', '물체 A');
+      drawStackedBlocks(sbx, sby, m2, '#dc2626', '물체 B');
+    }
+
+    function render() {
+      drawGrid();
+      drawSeesaw();
+    }
+
+    // 풀이 모달 내용 업데이트 (분수 표시 적용)
+    function updateSolutionModal() {
+      const { ax, ay, m1, bx, by, m2 } = currentProblem;
+      const totalM = m1 + m2;
+      const numX = m2 * bx + m1 * ax;
+      const numY = m2 * by + m1 * ay;
+
+      const fracX = toFractionStr(numX, totalM);
+      const fracY = toFractionStr(numY, totalM);
+      
+      const floatX = (numX / totalM).toFixed(2);
+      const floatY = (numY / totalM).toFixed(2);
+
+      const dispX = fracX.includes('/') ? `${fracX} (≈ ${floatX})` : fracX;
+      const dispY = fracY.includes('/') ? `${fracY} (≈ ${floatY})` : fracY;
+
+      modalBody.innerHTML = `
+        <div class="step-box">
+          <div class="step-title">1단계: 토크(돌림힘)의 균형 원리</div>
+          <p style="font-size: 0.9rem; color: #334155;">
+            시소가 수평으로 평형을 이루려면 받침점 P로부터 두 물체까지의 거리 비 (d₁ : d₂)가 
+            <strong>무게의 역비율</strong>을 이루어야 합니다.
+          </p>
+          <div class="math-expr-box">
+            • 토크 균형: m₁ × d₁ = m₂ × d₂<br>
+            • 거리의 비: d₁ : d₂ = m₂ : m₁<br>
+            👉 <strong>받침점 P는 선분 AB를 m₂ : m₁ 으로 내분하는 점입니다.</strong>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <div class="step-title">2단계: 내분비 구하기</div>
+          <p style="font-size: 0.9rem; color: #334155;">
+            물체 A의 무게 m₁ = <strong>${m1}kg</strong>, 물체 B의 무게 m₂ = <strong>${m2}kg</strong> 이므로
+          </p>
+          <div class="math-expr-box">
+            내분비 (m₂ : m₁) = <strong>${m2} : ${m1}</strong>
+          </div>
+        </div>
+
+        <div class="step-box">
+          <div class="step-title">3단계: 좌표평면 내분점 공식 대입 계산</div>
+          <p style="font-size: 0.9rem; color: #334155;">
+            두 점 A(${ax}, ${ay}), B(${bx}, ${by})를 <strong>${m2} : ${m1}</strong> 로 내분하는 점 P(x, y)의 좌표:
+          </p>
+          <div class="math-expr-box">
+            <strong>x 좌표:</strong><br>
+            P_x = (${m2} × (${bx}) + ${m1} × (${ax})) / (${m2} + ${m1})<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;= (${m2 * bx} + ${m1 * ax}) / ${totalM}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;= ${numX} / ${totalM} = <strong>${dispX}</strong><br><br>
+
+            <strong>y 좌표:</strong><br>
+            P_y = (${m2} × (${by}) + ${m1} × (${ay})) / (${m2} + ${m1})<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;= (${m2 * by} + ${m1 * ay}) / ${totalM}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;= ${numY} / ${totalM} = <strong>${dispY}</strong>
+          </div>
+        </div>
+
+        <div class="step-box" style="background: #f0fdf4; border-color: #bbf7d0;">
+          <div class="step-title" style="color: #16a34a;">✅ 최종 균형점(내분점) 좌표</div>
+          <p style="font-size: 1.05rem; font-weight: bold; text-align: center; color: #15803d; margin-top: 4px;">
+            P( ${fracX} , ${fracY} )
+          </p>
+        </div>
+      `;
+    }
+
+    // Modal Control
+    function openModal() {
+      updateSolutionModal();
+      solutionModal.classList.add('active');
+    }
+
+    function closeModal() {
+      solutionModal.classList.remove('active');
+    }
+
+    // Event Listeners
+    hintBtn.addEventListener('click', () => {
+      hintBtn.style.display = 'none';
+      internalRatioInfo.style.display = 'inline';
+    });
+
+    // 정답 보기 버튼 핸들러 (분수 표기 지원)
+    showAnswerBtn.addEventListener('click', () => {
+      const { ax, ay, m1, bx, by, m2 } = currentProblem;
+      const totalM = m1 + m2;
+      const numX = m2 * bx + m1 * ax;
+      const numY = m2 * by + m1 * ay;
+
+      const fracX = toFractionStr(numX, totalM);
+      const fracY = toFractionStr(numY, totalM);
+
+      showAnswerBtn.style.display = 'none';
+      answerText.style.display = 'inline';
+      answerText.textContent = `P(${fracX}, ${fracY})`;
+
+      // 입력란에 분수 형태 정답 채우기
+      inputX.value = fracX;
+      inputY.value = fracY;
+    });
+
+    solutionBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    solutionModal.addEventListener('click', (e) => {
+      if (e.target === solutionModal) closeModal();
+    });
+
+    generateBtn.addEventListener('click', generateNewProblem);
+    checkBtn.addEventListener('click', checkAnswer);
+
+    inputX.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+    inputY.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+
+    // Initial Load
+    generateNewProblem();
+  </script>
+</body>
+</html>
