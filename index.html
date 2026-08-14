@@ -806,7 +806,6 @@
       ctx.beginPath(); ctx.moveTo(xZero, PADDING - 5); ctx.lineTo(xZero, canvasSize - PADDING + 5); ctx.stroke();
 
       ctx.fillStyle = '#64748b';
-      // 💡 [수정] 좌표축 눈금 숫자 크기: 10px -> 13px
       ctx.font = '13px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
@@ -838,7 +837,6 @@
 
       const topY = sy - 10 - mass * (blockSize + blockGap) - 6;
       ctx.fillStyle = color;
-      // 💡 [수정] 물체 라벨 및 무게 글자 크기: 11px -> 14px
       ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
@@ -868,7 +866,6 @@
       ctx.stroke();
 
       ctx.fillStyle = color;
-      // 💡 [수정] 받침점 P 좌표 표시 글자 크기: 10px -> 13px
       ctx.font = 'bold 13px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
@@ -917,7 +914,6 @@
       ctx.fillStyle = '#dc2626';
       ctx.beginPath(); ctx.arc(sbx, sby, 6, 0, Math.PI * 2); ctx.fill();
 
-      // 💡 [수정] 점 A, B 좌표 글자 크기: 12px -> 15px
       ctx.font = 'bold 15px sans-serif'; 
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.fillStyle = '#1d4ed8'; ctx.fillText(`A(${ax}, ${ay})`, sax, say + 8);
@@ -932,6 +928,7 @@
       drawSeesaw();
     }
 
+    // 💡 [수정] 지레의 원리 기반으로 해설 모달 내용 업데이트
     function updateSolutionModal() {
       const { ax, ay, m1, bx, by, m2 } = currentProblem;
       const totalM = m1 + m2;
@@ -949,14 +946,13 @@
 
       modalBody.innerHTML = `
         <div class="step-box">
-          <div class="step-title">1단계: 토크(돌림힘)의 균형 원리</div>
+          <div class="step-title">1단계: 지레의 원리</div>
           <p style="font-size: 0.9rem; color: #334155;">
-            시소가 수평으로 평형을 이루려면 받침점 P로부터 두 물체까지의 거리 비 (d₁ : d₂)가 
-            <strong>무게의 역비율</strong>을 이루어야 합니다.
+            시소가 수평으로 평형을 이루려면 <strong>두 힘(무게)의 크기에 각각 받침점까지의 길이를 곱했을 때 두 값은 서로 같아야 합니다.</strong>
           </p>
           <div class="math-expr-box">
-            • 토크 균형: m₁ × d₁ = m₂ × d₂<br>
-            • 거리의 비: d₁ : d₂ = m₂ : m₁<br>
+            • 지레의 평형: (무게₁) × (거리₁) = (무게₂) × (거리₂) &nbsp;[ m₁ × d₁ = m₂ × d₂ ]<br>
+            • 거리의 비: d₁ : d₂ = m₂ : m₁ (무게의 역비율)<br>
             👉 <strong>받침점 P는 선분 AB를 m₂ : m₁ 으로 내분하는 점입니다.</strong>
           </div>
         </div>
